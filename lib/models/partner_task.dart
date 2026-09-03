@@ -82,7 +82,7 @@ class PartnerTask {
     );
   }
 
-  int get units => items.fold(0, (sum, x) => sum + x.quantity);
+  int get units => items.fold(0, (totalUnits, x) => totalUnits + x.quantity);
 
   DateTime? get createdAt => DateTime.tryParse(createdAtLocal);
   int get ageMinutes {
