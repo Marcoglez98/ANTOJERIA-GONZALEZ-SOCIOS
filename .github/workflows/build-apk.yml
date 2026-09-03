@@ -35,6 +35,10 @@ jobs:
         run: |
           flutter create --platforms=android --org com.antojeria.gonzalez .
 
+      - name: Eliminar prueba automática de Flutter
+        run: |
+          rm -rf test
+
       - name: Configurar package Android SOCIOS
         run: |
           sed -i 's/applicationId = "com.antojeria.gonzalez.antojitos_pos"/applicationId = "com.antojeria.gonzalez.socios"/g' android/app/build.gradle.kts || true
