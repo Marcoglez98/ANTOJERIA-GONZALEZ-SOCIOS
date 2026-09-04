@@ -42,12 +42,12 @@ class PartnerApp extends StatelessWidget {
       title: 'ANTOJERIA GONZALEZ SOCIOS',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFE85D04),
+          seedColor: const Color(0xFF0B63CE),
         ),
         useMaterial3: true,
-        scaffoldBackgroundColor: const Color(0xFFFFF8F2),
+        scaffoldBackgroundColor: const Color(0xFFF4F8FF),
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFFE85D04),
+          backgroundColor: Color(0xFF0B63CE),
           foregroundColor: Colors.white,
           centerTitle: true,
         ),
@@ -179,7 +179,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       const CircleAvatar(
                         radius: 38,
-                        backgroundColor: Color(0xFFE85D04),
+                        backgroundColor: Color(0xFF0B63CE),
                         foregroundColor: Colors.white,
                         child: Icon(
                           Icons.restaurant,
@@ -192,7 +192,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w900,
-                          color: Color(0xFFE85D04),
+                          color: Color(0xFF0B63CE),
                         ),
                       ),
                       const Text(
@@ -515,7 +515,7 @@ class TasksView extends StatelessWidget {
       case 'received':
         return const Color(0xFFF4A261);
       case 'preparing':
-        return const Color(0xFFE85D04);
+        return const Color(0xFF0B63CE);
       case 'ready':
         return const Color(0xFF2D6A4F);
       case 'delivered':
@@ -660,8 +660,8 @@ class TasksView extends StatelessWidget {
                     width: double.infinity,
                     margin: const EdgeInsets.only(bottom: 6),
                     padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(color: const Color(0xFFFFF0E5), borderRadius: BorderRadius.circular(10)),
-                    child: const Text('⚠️ PEDIDO MODIFICADO · revisa qué es nuevo y qué ya estaba servido', style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFFE85D04))),
+                    decoration: BoxDecoration(color: const Color(0xFFEAF3FF), borderRadius: BorderRadius.circular(10)),
+                    child: const Text('⚠️ PEDIDO MODIFICADO · revisa qué es nuevo y qué ya estaba servido', style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF0B63CE))),
                   ),
                   if (task.deliveryAssigned) Text('🚚 ENTREGA ASIGNADA · Envío: \$${task.shippingFee.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF1565C0))),
                   ...task.items.take(4).map(
@@ -672,7 +672,7 @@ class TasksView extends StatelessWidget {
                             if (item.isServed) const Padding(padding: EdgeInsets.only(right: 6), child: Text('✅', style: TextStyle(fontSize: 16))),
                             Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                               Text('${item.quantity} × ${item.name}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: item.isServed ? Colors.grey : null, decoration: item.isServed ? TextDecoration.lineThrough : null)),
-                              if (item.isAdded) const Text('NUEVO · PREPARAR', style: TextStyle(color: Color(0xFFE85D04), fontWeight: FontWeight.w900, fontSize: 11)),
+                              if (item.isAdded) const Text('NUEVO · PREPARAR', style: TextStyle(color: Color(0xFF0B63CE), fontWeight: FontWeight.w900, fontSize: 11)),
                               if (item.isServed) const Text('YA SERVIDO · NO REPETIR', style: TextStyle(color: Color(0xFF2D6A4F), fontWeight: FontWeight.w900, fontSize: 11)),
                               if (item.note.isNotEmpty) Text('📝 ${item.note}', style: const TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.bold)),
                             ])),
@@ -692,7 +692,7 @@ class TasksView extends StatelessWidget {
                       const Text(
                         'Toca para ver detalle →',
                         style: TextStyle(
-                          color: Color(0xFFE85D04),
+                          color: Color(0xFF0B63CE),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -756,10 +756,10 @@ class TaskDetail extends StatelessWidget {
             ),
           if (task.revision > 1)
             const Card(
-              color: Color(0xFFFFF0E5),
+              color: Color(0xFFEAF3FF),
               child: Padding(
                 padding: EdgeInsets.all(12),
-                child: Text('⚠️ PEDIDO MODIFICADO · 🆕 prepara lo nuevo · ✅ lo servido no se repite · ❌ lo eliminado ya no se prepara', style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFFE85D04))),
+                child: Text('⚠️ PEDIDO MODIFICADO · 🆕 prepara lo nuevo · ✅ lo servido no se repite · ❌ lo eliminado ya no se prepara', style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF0B63CE))),
               ),
             ),
           if (task.deliveryAssigned)
@@ -783,7 +783,7 @@ class TaskDetail extends StatelessWidget {
           ...task.items.map(
             (item) => Card(
               color: item.isAdded
-                  ? const Color(0xFFFFF0E5)
+                  ? const Color(0xFFEAF3FF)
                   : (item.isServed ? const Color(0xFFEAF7EE) : Colors.white),
               child: Padding(
                 padding: const EdgeInsets.all(14),
@@ -791,7 +791,7 @@ class TaskDetail extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     if (item.isAdded)
-                      const Text('🆕 NUEVO · PREPARAR', style: TextStyle(color: Color(0xFFE85D04), fontWeight: FontWeight.w900, fontSize: 16)),
+                      const Text('🆕 NUEVO · PREPARAR', style: TextStyle(color: Color(0xFF0B63CE), fontWeight: FontWeight.w900, fontSize: 16)),
                     if (item.isServed)
                       const Text('✅ YA SERVIDO · NO PREPARAR OTRA VEZ', style: TextStyle(color: Color(0xFF2D6A4F), fontWeight: FontWeight.w900, fontSize: 15)),
                     if (item.isPrevious && task.revision > 1)
@@ -818,7 +818,7 @@ class TaskDetail extends StatelessWidget {
               ),
             ),
           ),
-          if (task.removedItems.isNotEmpty) ...[
+          if (task.revision > 1 && task.removedItems.isNotEmpty) ...[
             const SizedBox(height: 8),
             const Text('❌ ELIMINADO DEL PEDIDO', style: TextStyle(color: Colors.red, fontSize: 17, fontWeight: FontWeight.w900)),
             ...task.removedItems.map((item) => Card(
@@ -968,7 +968,7 @@ class StatsView extends StatelessWidget {
               'Preparando',
               '$preparing',
               Icons.soup_kitchen,
-              const Color(0xFFE85D04),
+              const Color(0xFF0B63CE),
             ),
             _Stat(
               'Listos',
@@ -990,7 +990,7 @@ class StatsView extends StatelessWidget {
           (entry) => ListTile(
             leading: const Icon(
               Icons.fastfood,
-              color: Color(0xFFE85D04),
+              color: Color(0xFF0B63CE),
             ),
             title: Text(entry.key),
             trailing: Text(
