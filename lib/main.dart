@@ -656,16 +656,27 @@ class TasksView extends StatelessWidget {
                     ),
                   ),
                   const Divider(),
+                  if (task.revision > 1) Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.only(bottom: 6),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(color: const Color(0xFFFFF0E5), borderRadius: BorderRadius.circular(10)),
+                    child: const Text('⚠️ PEDIDO MODIFICADO · revisa qué es nuevo y qué ya estaba servido', style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFFE85D04))),
+                  ),
+                  if (task.deliveryAssigned) Text('🚚 ENTREGA ASIGNADA · Envío: \$${task.shippingFee.toStringAsFixed(2)}', style: const TextStyle(fontWeight: FontWeight.w900, color: Color(0xFF1565C0))),
                   ...task.items.take(4).map(
                         (item) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 3),
-                          child: Text(
-                            '${item.quantity} × ${item.name}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+                          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                            if (item.isAdded) const Padding(padding: EdgeInsets.only(right: 6), child: Text('🆕', style: TextStyle(fontSize: 16))),
+                            if (item.isServed) const Padding(padding: EdgeInsets.only(right: 6), child: Text('✅', style: TextStyle(fontSize: 16))),
+                            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                              Text('${item.quantity} × ${item.name}', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: item.isServed ? Colors.grey : null, decoration: item.isServed ? TextDecoration.lineThrough : null)),
+                              if (item.isAdded) const Text('NUEVO · PREPARAR', style: TextStyle(color: Color(0xFFE85D04), fontWeight: FontWeight.w900, fontSize: 11)),
+                              if (item.isServed) const Text('YA SERVIDO · NO REPETIR', style: TextStyle(color: Color(0xFF2D6A4F), fontWeight: FontWeight.w900, fontSize: 11)),
+                              if (item.note.isNotEmpty) Text('📝 ${item.note}', style: const TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.bold)),
+                            ])),
+                          ]),
                         ),
                       ),
                   if (task.items.length > 4)
@@ -743,6 +754,23 @@ class TaskDetail extends StatelessWidget {
                 ),
               ),
             ),
+          if (task.revision > 1)
+            const Card(
+              color: Color(0xFFFFF0E5),
+              child: Padding(
+                padding: EdgeInsets.all(12),
+                child: Text('⚠️ PEDIDO MODIFICADO · 🆕 prepara lo nuevo · ✅ lo servido no se repite · ❌ lo eliminado ya no se prepara', style: TextStyle(fontWeight: FontWeight.w900, color: Color(0xFFE85D04))),
+              ),
+            ),
+          if (task.deliveryAssigned)
+            Card(
+              color: const Color(0xFFE8F1FF),
+              child: ListTile(
+                leading: const Icon(Icons.delivery_dining, color: Color(0xFF1565C0)),
+                title: const Text('TÚ LLEVAS ESTE PEDIDO', style: TextStyle(fontWeight: FontWeight.w900)),
+                subtitle: Text('El costo de envío que te corresponde es \$${task.shippingFee.toStringAsFixed(2)}'),
+              ),
+            ),
           if (task.customer.isNotEmpty)
             ListTile(
               leading: const Icon(
@@ -754,41 +782,54 @@ class TaskDetail extends StatelessWidget {
             ),
           ...task.items.map(
             (item) => Card(
+              color: item.isAdded
+                  ? const Color(0xFFFFF0E5)
+                  : (item.isServed ? const Color(0xFFEAF7EE) : Colors.white),
               child: Padding(
                 padding: const EdgeInsets.all(14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (item.isAdded)
+                      const Text('🆕 NUEVO · PREPARAR', style: TextStyle(color: Color(0xFFE85D04), fontWeight: FontWeight.w900, fontSize: 16)),
+                    if (item.isServed)
+                      const Text('✅ YA SERVIDO · NO PREPARAR OTRA VEZ', style: TextStyle(color: Color(0xFF2D6A4F), fontWeight: FontWeight.w900, fontSize: 15)),
+                    if (item.isPrevious && task.revision > 1)
+                      const Text('◻️ YA ESTABA EN EL PEDIDO', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.bold)),
                     Text(
                       '${item.quantity} × ${item.name}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: item.isServed ? Colors.grey : null, decoration: item.isServed ? TextDecoration.lineThrough : null),
                     ),
-                    if (item.promotionName != null)
-                      Text(
-                        'Promoción: ${item.promotionName}',
-                        style: const TextStyle(
-                          color: Color(0xFF2D6A4F),
-                          fontWeight: FontWeight.bold,
-                        ),
+                    if (item.promotionName != null && item.promotionName!.trim().isNotEmpty)
+                      Text('Promoción: ${item.promotionName}', style: const TextStyle(color: Color(0xFF2D6A4F), fontWeight: FontWeight.bold)),
+                    if (item.note.isNotEmpty)
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(top: 6),
+                        padding: const EdgeInsets.all(9),
+                        decoration: BoxDecoration(color: const Color(0xFFFFF3E0), borderRadius: BorderRadius.circular(10)),
+                        child: Text('📝 NOTA DEL CLIENTE: ${item.note}', style: const TextStyle(color: Colors.deepOrange, fontWeight: FontWeight.w900)),
                       ),
-                    if (item.reason.isNotEmpty)
-                      Text(
-                        'Detalle: ${item.reason}',
-                        style: const TextStyle(
-                          color: Colors.deepOrange,
-                        ),
-                      ),
-                    Text(
-                      'Importe: \$${item.total.toStringAsFixed(2)}',
-                    ),
+                    if (item.reason.isNotEmpty && item.reason != 'Promocion' && item.reason != 'Promocion automatica')
+                      Text('Detalle: ${item.reason}', style: const TextStyle(color: Colors.deepOrange)),
+                    Text('Importe: \$${item.total.toStringAsFixed(2)}'),
                   ],
                 ),
               ),
             ),
           ),
+          if (task.removedItems.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            const Text('❌ ELIMINADO DEL PEDIDO', style: TextStyle(color: Colors.red, fontSize: 17, fontWeight: FontWeight.w900)),
+            ...task.removedItems.map((item) => Card(
+              color: const Color(0xFFFFE5E5),
+              child: ListTile(
+                leading: const Icon(Icons.cancel, color: Colors.red),
+                title: Text('${item.quantity} × ${item.name}', style: const TextStyle(decoration: TextDecoration.lineThrough, fontWeight: FontWeight.bold)),
+                subtitle: const Text('Ya no preparar', style: TextStyle(color: Colors.red, fontWeight: FontWeight.w900)),
+              ),
+            )),
+          ],
           const SizedBox(height: 10),
           if (!task.cancelled && !task.paid)
             Wrap(
@@ -850,7 +891,7 @@ class StatsView extends StatelessWidget {
 
     final sold = paid.fold<double>(
       0,
-      (total, task) => total + task.partnerAmount,
+      (total, task) => total + task.totalForPartner,
     );
 
     final units = tasks
