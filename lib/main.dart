@@ -444,9 +444,8 @@ class _DashboardState extends State<Dashboard> {
           final history = all
               .where(
                 (task) =>
-                    task.cancelled ||
-                    task.paid ||
-                    task.status == 'delivered',
+                    !task.cancelled &&
+                    (task.paid || task.status == 'delivered'),
               )
               .toList();
 
@@ -486,7 +485,7 @@ class _DashboardState extends State<Dashboard> {
           ),
           NavigationDestination(
             icon: Icon(Icons.history),
-            label: 'Historial',
+            label: 'Pagados',
           ),
           NavigationDestination(
             icon: Icon(Icons.insights),
